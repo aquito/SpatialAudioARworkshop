@@ -18,11 +18,13 @@ public class AudioObjectManager : MonoBehaviour
     private bool _planesFound;
     private int _objPlacedIndex;
     private List<GameObject> audioElements = new List<GameObject>();
+    private List<GameObject> audioObjectsInTheScene = new List<GameObject>();
     public List<GameObject> elements;
 
     private AudioSource audioSource;
+    private float[] startTime;
 
-    private AddAudioObject addAudioObject;
+    //private AddAudioObject addAudioObject;
 
     // Start is called before the first frame update
     private void Awake()
@@ -45,6 +47,7 @@ public class AudioObjectManager : MonoBehaviour
 
         }
 
+        startTime = new float[elements.Count];
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -70,6 +73,29 @@ public class AudioObjectManager : MonoBehaviour
         {
             ActivateAudioElement();
         }
+
+        
+
+        if (audioObjectsInTheScene.Count != 0)
+        {
+            for (int i = 0; i < audioObjectsInTheScene.Count; i++)
+            {
+                startTime[i] = startTime[i] + Time.deltaTime;
+
+                if (startTime[i] > elements[i].GetComponent<AddAudioObject>().lifeTime)
+                {
+                    if(audioObjectsInTheScene[i])
+                    {
+                        Debug.Log(audioObjectsInTheScene[i].name + " reached end of its life cycle");
+                    }
+                        
+                    Destroy(audioObjectsInTheScene[i]);
+                }
+            }
+
+
+        }
+
     }
 
     private void ScanPlanes()
@@ -101,21 +127,28 @@ public class AudioObjectManager : MonoBehaviour
 
     private void ActivateAudioElement()
     {
-        if (audioElements[_objPlacedIndex] == null)
+        if (_objPlacedIndex == audioElements.Count)
         {
             audioSource.Play();
         }   
 
         if (_objPlacedIndex < audioElements.Count && audioElements[_objPlacedIndex] != null)
         {
-            Instantiate(audioElements[_objPlacedIndex], elements[_objPlacedIndex].GetComponent<Transform>().position, elements[_objPlacedIndex].GetComponent<Transform>().rotation);
-         
+            GameObject obj = Instantiate(audioElements[_objPlacedIndex], elements[_objPlacedIndex].GetComponent<Transform>().position, elements[_objPlacedIndex].GetComponent<Transform>().rotation);
+            audioObjectsInTheScene.Add(obj);
+            startTime[_objPlacedIndex] = 0f;
         }
         else
         {
             HidePlanes();
         }
-        _objPlacedIndex++;
+      
+        if (_objPlacedIndex < audioElements.Count)
+        {
+            _objPlacedIndex++;
+        }
+            
+
 
         
     }
@@ -139,7 +172,9 @@ public class AudioObjectManager : MonoBehaviour
         for (int i = 0; i < elements.Count; i++)
         {
             var audioObject = elements[i].GetComponent<AddAudioObject>().audioObject;
-            
+
+            //audioObject.SetActive(true);
+            //audioObject.GetComponent<AudioSource>().enabled = true;
             audioObject.GetComponent<AudioSource>().clip = null;
 
         }

@@ -8,6 +8,7 @@ public class AddAudioObject : MonoBehaviour
 
     public AudioClip yourAudio;
 
+    public float lifeTime;
 
     private AudioSource audioSource;
 
@@ -24,7 +25,7 @@ public class AddAudioObject : MonoBehaviour
 
             var sphereMesh = gameObject.GetComponentInChildren<MeshRenderer>();
 
-            // print(sphereMesh.name);
+            //print(audioObject.name);
             sphereMesh.enabled = false;
         }
         else
@@ -33,5 +34,11 @@ public class AddAudioObject : MonoBehaviour
             UnityEngine.Assertions.Assert.IsNotNull<GameObject>(audioObject, audioObject.name + " is missing for " + obj.name);
         }
 
+        if (lifeTime == 0f)
+        {
+            lifeTime = 10.0f;
+        }
+
     }
+
 }
