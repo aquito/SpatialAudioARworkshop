@@ -22,13 +22,13 @@ public class AudioObjectManager : MonoBehaviour
 
     private AudioSource audioSource;
 
+    private AddAudioObject addAudioObject;
+
     // Start is called before the first frame update
     private void Awake()
     {
         m_RaycastManager = GetComponent<ARRaycastManager>();
         m_ARPlaneManager = GetComponent<ARPlaneManager>();
-
-        
 
     }
 
@@ -37,10 +37,11 @@ public class AudioObjectManager : MonoBehaviour
         for (int i = 0; i < elements.Count; i++)
         {
             var audioObject = elements[i].GetComponent<AddAudioObject>().audioObject;
-            //print(audioObject.name);
+           // print(audioObject.name);
+            var audioClip = elements[i].GetComponent<AddAudioObject>().yourAudio;
 
-            
             audioElements.Add(audioObject);
+            audioObject.GetComponent<AudioSource>().clip = audioClip;
 
         }
 
@@ -103,11 +104,12 @@ public class AudioObjectManager : MonoBehaviour
         if (audioElements[_objPlacedIndex] == null)
         {
             audioSource.Play();
-        }
+        }   
 
         if (_objPlacedIndex < audioElements.Count && audioElements[_objPlacedIndex] != null)
         {
             Instantiate(audioElements[_objPlacedIndex], elements[_objPlacedIndex].GetComponent<Transform>().position, elements[_objPlacedIndex].GetComponent<Transform>().rotation);
+         
         }
         else
         {
@@ -129,6 +131,17 @@ public class AudioObjectManager : MonoBehaviour
         foreach (var plane in m_ARPlaneManager.trackables)
         {
             plane.gameObject.SetActive(false);
+        }
+    }
+
+    void OnApplicationQuit()
+    {
+        for (int i = 0; i < elements.Count; i++)
+        {
+            var audioObject = elements[i].GetComponent<AddAudioObject>().audioObject;
+            
+            audioObject.GetComponent<AudioSource>().clip = null;
+
         }
     }
 }
