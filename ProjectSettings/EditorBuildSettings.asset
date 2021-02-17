@@ -6,11 +6,14 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: d1c3109bdb54ad54c8a2b2838528e640
-  - enabled: 1
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
     path: Assets/Scenes/main.unity
     guid: acfbcce8b8a56ef449442666f0f42192
+  - enabled: 1
+    path: Assets/Scenes/narrative-ish.unity
+    guid: 58370d5259d2cc744a1a13cd702e1b85
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 7966dcaf839cb064e8f5cb23e1db286a, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 944f341616a3151459fdcadeeae230f6, type: 2}
