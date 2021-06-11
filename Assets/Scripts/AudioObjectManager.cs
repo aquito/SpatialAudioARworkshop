@@ -20,9 +20,11 @@ public class AudioObjectManager : MonoBehaviour
     private List<GameObject> audioElements = new List<GameObject>();
     private List<GameObject> audioObjectsInTheScene = new List<GameObject>();
     public List<GameObject> elements;
+    public int planesRequired;
 
     private AudioSource audioSource;
     private float[] startTime;
+    private float masterTime;
 
     //private AddAudioObject addAudioObject;
 
@@ -39,7 +41,7 @@ public class AudioObjectManager : MonoBehaviour
         for (int i = 0; i < elements.Count; i++)
         {
             var audioObject = elements[i].GetComponent<AddAudioObject>().audioObject;
-           // print(audioObject.name);
+           print(audioObject.name + " found in scene");
             var audioClip = elements[i].GetComponent<AddAudioObject>().yourAudio;
 
             audioElements.Add(audioObject);
@@ -49,18 +51,37 @@ public class AudioObjectManager : MonoBehaviour
 
         startTime = new float[elements.Count];
         audioSource = GetComponent<AudioSource>();
+
+        if (planesRequired == 0)
+        {
+            planesRequired = 1;
+        }
     }
 
 
     // Update is called once per frame
     void Update()
     {
+        if(audioInitiated)
+        {
+            masterTime = masterTime + Time.deltaTime;
+
+            for (int i = 0; i < elements.Count; i++)
+            {
+                if (!elements[i].GetComponent<AddAudioObject>().isInstantiated && masterTime >= elements[i].GetComponent<AddAudioObject>().triggerTime)
+                {
+                    ActivateAudioElement();
+                }
+            }
+        }
+        
         if (!_planesFound)
         {
             ScanPlanes();
         }
         else
         {
+            InitiateAudioElements();
             PlaceObject();
         }
 
@@ -82,6 +103,8 @@ public class AudioObjectManager : MonoBehaviour
             {
                 startTime[i] = startTime[i] + Time.deltaTime;
 
+
+
                 if (startTime[i] > elements[i].GetComponent<AddAudioObject>().lifeTime)
                 {
                     if(audioObjectsInTheScene[i])
@@ -100,7 +123,7 @@ public class AudioObjectManager : MonoBehaviour
 
     private void ScanPlanes()
     {
-        if (m_ARPlaneManager.trackables.count > 0)
+        if (m_ARPlaneManager.trackables.count > planesRequired)
         {
             _planesFound = true;
         }
@@ -137,6 +160,8 @@ public class AudioObjectManager : MonoBehaviour
             GameObject obj = Instantiate(audioElements[_objPlacedIndex], elements[_objPlacedIndex].GetComponent<Transform>().position, elements[_objPlacedIndex].GetComponent<Transform>().rotation);
             audioObjectsInTheScene.Add(obj);
             startTime[_objPlacedIndex] = 0f;
+            elements[_objPlacedIndex].GetComponent<AddAudioObject>().isInstantiated = true;
+            print(obj.name + " instantiated");
         }
         else
         {

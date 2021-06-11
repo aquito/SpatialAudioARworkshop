@@ -10,6 +10,10 @@ public class AddAudioObject : MonoBehaviour
 
     public float lifeTime;
 
+    public float triggerTime;
+
+    public bool isInstantiated;
+
     private AudioSource audioSource;
 
     private AudioClip audioClip;
@@ -37,6 +41,11 @@ public class AddAudioObject : MonoBehaviour
         if (lifeTime == 0f)
         {
             lifeTime = 10.0f;
+        }
+
+        if (triggerTime == 0f)
+        {
+            triggerTime = 1.0f;
         }
 
     }

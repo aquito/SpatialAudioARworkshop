@@ -11,7 +11,7 @@ public class FollowCamera : MonoBehaviour
     private GameObject wayPoint;
     private Vector3 wayPointPos;
     //This will be the zombie's speed. Adjust as necessary.
-    private float speed = 1.0f;
+    private float speed = 0.6f;
 
     private void Start()
     {
